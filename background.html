@@ -1,0 +1,46 @@
+<script type="text/javascript" src="util.js"></script>
+<script>
+function check()
+{
+    current_url_index = -1;
+    urls = loadUrls();
+    req = null;
+    downloadNextUrl(0);
+}
+
+check();
+window.setInterval(function() {
+      check();
+    }, 60000 * 30);
+
+function printData()
+{
+    chrome.browserAction.setBadgeBackgroundColor({color: [0, 255, 0, 255]});
+    var count = getUnwatchedCount(urls);
+    if (count > 0){
+        chrome.browserAction.setBadgeText({text: count.toString()});
+        saveUrls(urls);
+    }
+    else
+        chrome.browserAction.setBadgeText({text: ""});
+}
+
+function showData()
+{
+    parseData();
+    
+    downloadNextUrl(current_url_index + 1);
+}
+
+function getTable(html)
+{
+    html = copyAfter(html, "<table class=\"newCatList visitedT\">");
+    return html.substring(0, html.search("</table>"));
+}
+
+function copyAfter(text, pattern)
+{
+    var i = text.search(pattern);
+    return text.substring(i + pattern.length);
+}
+</script>

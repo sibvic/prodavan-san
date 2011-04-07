@@ -1,0 +1,160 @@
+﻿<html>
+<head>
+<style>
+body {
+  min-width:500px;
+  overflow-x:hidden;
+}
+
+table {
+  font-size: 13px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  line-height: 20px;
+  color: #4A4949;
+}
+
+div.text{
+  font-size: 13px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  line-height: 20px;
+  color: #4A4949;
+}
+
+div.link{
+  font-size: 13px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  line-height: 20px;
+  color: #4A4949;
+  text-decoration: underline;
+}
+
+img {
+  margin:5px;
+  border:2px solid black;
+  vertical-align:middle;
+  width:100px;
+  height:75px;
+}
+</style>
+<script type="text/javascript" src="util.js"></script>
+<script>
+var urls = loadUrls();
+window.setTimeout(function() {
+      printData();
+    }, 500);
+
+function compareCars(a, b)
+{
+    return b.id - a.id;
+}
+
+function markAsRead()
+{
+    for (var i = 0; i < urls.length; ++i){
+        for (var ii = 0; ii < urls[i].data.length; ++ii){
+            urls[i].data[ii].watched = true;
+        }
+    }
+    saveUrls(urls);
+    chrome.browserAction.setBadgeText({text: ""});
+}
+
+function printData()
+{
+    if (urls.length == 0)
+        return;
+    //data.Sort(compareCars);
+    var count = getUnwatchedCount(urls);
+    if (count == 0)
+    {
+        var a = document.createElement("div");
+        a.setAttribute('class', "text");
+        a.appendChild(document.createTextNode("Нет новых объявлений"));
+        document.body.appendChild(a);
+        return;
+    }
+    var a = document.createElement("div");
+    a.setAttribute('onClick', "markAsRead();");
+    a.setAttribute('class', "link");
+    a.appendChild(document.createTextNode("Пометить как прочитанные"));
+    document.body.appendChild(a);
+    
+    var mainTable = document.createElement("table");
+    document.body.appendChild(mainTable);
+    for (var urlidx = 0; urlidx < urls.length; ++urlidx){
+        var data = urls[urlidx].data;
+        for (var i = 0; i < data.length; ++i){
+            if (data[i].watched)
+                continue;
+            var row = document.createElement("tr");
+            mainTable.appendChild(row);
+            
+            var cell = document.createElement("td");
+            row.appendChild(cell);
+            var a = document.createElement("div");
+            a.setAttribute('class', "link");
+            a.setAttribute('onClick', "chrome.tabs.create({'url':\"" + data[i].url + "\", 'selected':true});");
+            a.appendChild(document.createTextNode(data[i].date));
+            cell.appendChild(a);
+            
+            cell = document.createElement("td");
+            row.appendChild(cell);
+            var a = document.createElement("div");
+            a.setAttribute('onClick', "chrome.tabs.create({'url':\"" + data[i].url + "\", 'selected':true});");
+            var img = document.createElement("img");
+            img.setAttribute('src', data[i].imgUrl);
+            a.appendChild(img);
+            cell.appendChild(a);
+            
+            cell = document.createElement("td");
+            row.appendChild(cell);
+            if (data[i].sold)
+            {
+                var strike = document.createElement("strike");
+                cell.appendChild(strike);
+                strike.appendChild(document.createTextNode(data[i].model));
+            }
+            else
+            {
+                cell.appendChild(document.createTextNode(data[i].model));
+            }
+            cell.appendChild(document.createElement("br"));
+            cell.appendChild(document.createTextNode(data[i].year + " | " + data[i].engine + " (" + data[i].fuel + ")"));
+            cell.appendChild(document.createElement("br"));
+            cell.appendChild(document.createTextNode(data[i].gearbox + " | " + data[i].drive));
+            
+            cell = document.createElement("td");
+            row.appendChild(cell);
+            cell.appendChild(document.createTextNode(data[i].price));
+            cell.appendChild(document.createElement("br"));
+            cell.appendChild(document.createTextNode(data[i].track));
+            cell.appendChild(document.createElement("br"));
+            cell.appendChild(document.createTextNode(data[i].city));
+        }
+    }
+}
+
+function getTable(html)
+{
+    html = copyAfter(html, "<table class=\"newCatList visitedT\">");
+    return html.substring(0, html.search("</table>"));
+}
+
+function copyAfter(text, pattern)
+{
+    var i = text.search(pattern);
+    return text.substring(i + pattern.length);
+}
+
+function printError(error)
+{
+    var message = document.createElement("p");
+    var text = document.createTextNode(error);
+    message.appendChild(text);
+    document.body.appendChild(message);
+}
+</script>
+</head>
+<body>
+</body>
+</html>
