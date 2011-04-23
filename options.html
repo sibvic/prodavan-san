@@ -1,5 +1,10 @@
 ﻿<html>
 <head><title>Drom.ru chrome extension options</title></head>
+<style>
+   input.url {
+       width:900px;   
+   }
+</style>
 <script type="text/javascript" src="util.js"></script>
 <script type="text/javascript">
 
@@ -69,6 +74,7 @@ function add_more(url, data){
     div.appendChild(input);
     input.setAttribute('id', "url_" + last_index);
     input.setAttribute('value', url);
+    input.setAttribute('class', "url");
     var input2 = document.createElement("input");
     div.appendChild(input2);
     input2.setAttribute('id', "url_lastID_" + last_index);

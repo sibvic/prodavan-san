@@ -151,7 +151,7 @@ function parseData()
     for (var i = 0; i < data.length; ++i){
         if (data[i].watched){
             ++watchedCount;
-            if (watchedCount > 20){
+            if (watchedCount > 40){
                 continue;
             }
         }
