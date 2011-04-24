@@ -37,6 +37,7 @@ img {
 }
 </style>
 <script type="text/javascript" src="util.js"></script>
+<script type="text/javascript" src="dromruparser.js"></script>
 <script>
 var urls = loadUrls();
 window.setTimeout(function() {
@@ -132,18 +133,6 @@ function printData()
             cell.appendChild(document.createTextNode(data[i].city));
         }
     }
-}
-
-function getTable(html)
-{
-    html = copyAfter(html, "<table class=\"newCatList visitedT\">");
-    return html.substring(0, html.search("</table>"));
-}
-
-function copyAfter(text, pattern)
-{
-    var i = text.search(pattern);
-    return text.substring(i + pattern.length);
 }
 
 function printError(error)

@@ -1,4 +1,5 @@
 <script type="text/javascript" src="util.js"></script>
+<script type="text/javascript" src="dromruparser.js"></script>
 <script>
 function check()
 {
@@ -27,20 +28,11 @@ function printData()
 
 function showData()
 {
-    parseData();
+    if (urls[current_url_index].url.search("drom.ru") >= 0)
+        parseDromRuData();
+    else
+        parseGorod55Data();
     
     downloadNextUrl(current_url_index + 1);
-}
-
-function getTable(html)
-{
-    html = copyAfter(html, "<table class=\"newCatList visitedT\">");
-    return html.substring(0, html.search("</table>"));
-}
-
-function copyAfter(text, pattern)
-{
-    var i = text.search(pattern);
-    return text.substring(i + pattern.length);
 }
 </script>

@@ -43,99 +43,85 @@ function getUnwatchedCount(urlsArr){
     return count;
 }
 
-function parseData()
+function copyAfter(text, pattern)
 {
-    var expr = new RegExp("[<]tr[^>]+>[^<]+<td>[^<]+<center>[^<]+<a href=\"([^\"]+)\">(\d+-\d+)</a>[^<]+</center>[^<]+</td>[^<]+<td[^>]+>[^<]+<a href=\"[^\"]+\"><img[^s]+ src=\"[^\"]+\"></a>[^<]+</td>[^<]+<td[^>]+>([^<]+)</td>[^<]+<td[^>]+>([^<]+)</td>[^<]+<td[^>]+>([^<]+)</td>[^<]+<td>([^<]+<br>[^<]+<br>[^<]+)</td>[^<]+<td>([^<]+)</td>[^<]+<td>[^<]+<center>([^<]+)</center>[^<]+</td>[^<]+<td>[^<]+<span[^>]+>([^<]+)</span>[^<]+<br>[^<]+<span[^>]+>([^<]+)</span>[^<]+</td>[^<]+</tr>");
-    var urlPattern = new RegExp("<a href=\"([^\"]+)\">(\\d+-\\d+)</a>([^<]+<a href=)?");
-    var imgPattern = new RegExp("<img[^s]+ src=\"([^\"]+)\">");
-    var modelPattern = new RegExp("<td[^>]*>(?:[^<]+<(?:strike|b)>)?([^<]+)(?:[^<]+</(?:strike|b)>[^<]+<(?:strike|b)>)?([^<]+)?(</(?:strike|b)>[^<]+)?</td>");
-    var valuePattern = new RegExp("<td[^>]*>([^<]+)</td>");
-    var paramsPattern = new RegExp("<td>([^<]*)<b[^<]+>([^<]*)<b[^<]+>([^<]*)</td>");
-    var pricePattern = new RegExp("<td>[^<]+<span[^>]+>([^<]+)</[^<]+<[^<]+<span[^>]+>([^<]+)");
+    var i = text.search(pattern);
+    return text.substring(i + pattern.length);
+}
+
+function getGorod55Table(html)
+{
+    html = copyAfter(html, "<table id=\"common_table\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"find_result");
+    return html.substring(0, html.search("</table>"));
+}
+
+function parseGorod55Data()
+{
+    var datePattern = new RegExp("(\\d\\d\\.\\d\\d\\.\\d\\d)(?:[^<]+)?<br>(\\d\\d:\\d\\d)");
+    var urlPattern = new RegExp("<a href='/auto/autoad/view/\\?id=(\\d+)'");
+    var imgPattern = new RegExp("<img id=\"(?:[^\"]+)\" title=\"(?:[^\"]+)\" alt=\"(?:[^\"]+)\" src=\"([^\"]+)\"");
+    var valuePattern = new RegExp(">([^<]+)<");
     
     var data = urls[current_url_index].data;
     if (data == null)
         data = new Array();
     urls[current_url_index].data = new Array();
     
-    var table = getTable(req.responseText);
+    var table = getGorod55Table(req.responseText);
     var res = null;
     do
     {
-        var sold = false;
-        res = urlPattern.exec(table);
+        table = copyAfter(table, "date_small");
+        res = datePattern.exec(table);
         if (res == null)
             continue;
-        var url = res[1];
-        var date = res[2];
-        var clipped = res[3] != null;
-        table = copyAfter(table, date);
+        var date = res[1] + "<br/>" + res[2];
+        table = copyAfter(table, "line_v");
+        table = copyAfter(table, "</td>");
+        
+        res = urlPattern.exec(table);
+        var id = res[1];
+        table = copyAfter(table, id);
+        var url = "http://www.gorod55.ru/auto/autoad/view/?id=" + id;
         
         res = imgPattern.exec(table);
-        var img;
-        if (res != null)
-            img = res[1];
+        var img = res[1];
         table = copyAfter(table, img);
+        table = copyAfter(table, id);
         
-        res = modelPattern.exec(table);
+        res = valuePattern.exec(table);
         var model = res[1];
-        if (res[2] != null)
-        {
-            model = model + " " + res[2];
-            sold = true;
-        }
         table = copyAfter(table, model);
+        table = copyAfter(table, "line_v");
+        table = copyAfter(table, "</td>");
         
         res = valuePattern.exec(table);
         var year = res[1];
-        table = copyAfter(table, year);
-        
-        var engine;
-        res = valuePattern.exec(table);
-        if (res != null)
-            engine = res[1];
-        
-        var fuel;
-        var gearbox;
-        var drive;
-        res = paramsPattern.exec(table);
-        if (res != null)
-        {
-            fuel = res[1];
-            gearbox = res[2];
-            drive = res[3];
-        }
-        table = copyAfter(table, drive);
-        
-        res = valuePattern.exec(table);
-        var track;
-        if (res != null)
-            track = res[1];
-        table = copyAfter(table, track);
-        if (track.search("&nbsp;") >= 0)
-            track = "-";
-        
-        var city;
-        var price;
-        res = pricePattern.exec(table);
-        if (res != null)
-        {
-            price = res[1];
-            while (price.search("&nbsp;") >= 0)
-            {
-                price = price.replace("&nbsp;", " ");
-            }
-            city = res[2];
-        }
+        table = copyAfter(table, "line_v");
         table = copyAfter(table, "</td>");
-        var lastID = urls[current_url_index].lastID;
-        var idPattern = new RegExp("/(\\d+)\\.htm");
-        var res = idPattern.exec(url);
-        if (res == null)
-            continue;
-        var id = parseInt(res[1]);
-        if (lastID != null && lastID == id && clipped == false)
-            break;
+        
+        res = valuePattern.exec(table);
+        var gearbox = res[1];
+        table = copyAfter(table, "line_v");
+        table = copyAfter(table, "</td>");
+        
+        res = valuePattern.exec(table);
+        var engine = res[1];
+        table = copyAfter(table, "line_v");
+        table = copyAfter(table, "</td>");
+        
+        res = valuePattern.exec(table);
+        var trip = res[1];
+        table = copyAfter(table, "line_v");
+        table = copyAfter(table, "</td>");
+        table = copyAfter(table, "line_v");
+        table = copyAfter(table, "</td>");
+        
+        res = valuePattern.exec(table);
+        var price = res[1];
+        table = copyAfter(table, "line_v");
+        table = copyAfter(table, "</td>");
+
         var found = false;
         for (var i = 0; i < data.length; ++i){
             if (data[i].id == id){
@@ -145,7 +131,7 @@ function parseData()
         }
         if (found)
             continue;
-        urls[current_url_index].data[urls[current_url_index].data.length] = new add(id, url, img, date, model, year, engine, fuel, gearbox, drive, track, city, price, sold);
+        urls[current_url_index].data[urls[current_url_index].data.length] = new add(id, url, img, date, model, year, engine, "", gearbox, "", trip, "Omsk", price, false);
     } while (res != null)
     var watchedCount = 0;
     for (var i = 0; i < data.length; ++i){
