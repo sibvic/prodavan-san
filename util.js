@@ -75,7 +75,7 @@ function parseGorod55Data()
         res = datePattern.exec(table);
         if (res == null)
             continue;
-        var date = res[1] + "<br/>" + res[2];
+        var date = res[1] + " " + res[2];
         table = copyAfter(table, "line_v");
         table = copyAfter(table, "</td>");
         
@@ -137,7 +137,7 @@ function parseGorod55Data()
     for (var i = 0; i < data.length; ++i){
         if (data[i].watched){
             ++watchedCount;
-            if (watchedCount > 40){
+            if (watchedCount > 100){
                 continue;
             }
         }
