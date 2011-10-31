@@ -45,6 +45,8 @@ function getUnwatchedCount(urlsArr){
 
 function copyAfter(text, pattern)
 {
+    if (pattern == null)
+        return "";
     var i = text.search(pattern);
     return text.substring(i + pattern.length);
 }

@@ -7,10 +7,10 @@ function getDromRuTable(html)
 function parseDromRuData()
 {
     var urlPattern = new RegExp("<a href=\"([^\"]+)\">(\\d+-\\d+)</a>([^<]+<a href=)?");
-    var imgPattern = new RegExp("<img[^s]+ src=\"([^\"]+)\">");
+    var imgPattern = new RegExp("<img[^s]* src=\"([^\"]+)\"( \/)?>");
     var modelPattern = new RegExp("<td[^>]*>(?:[^<]+<(?:strike|b)>)?([^<]+)(?:[^<]+</(?:strike|b)>[^<]+<(?:strike|b)>)?([^<]+)?(</(?:strike|b)>[^<]+)?</td>");
     var valuePattern = new RegExp("<td[^>]*>([^<]+)</td>");
-    var paramsPattern = new RegExp("<td>([^<]*)<b[^<]+>([^<]*)<b[^<]+>([^<]*)</td>");
+    var paramsPattern = new RegExp("<td>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)</td>");
     var pricePattern = new RegExp("<td>[^<]+<span[^>]+>([^<]+)</[^<]+<[^<]+<span[^>]+>([^<]+)");
     
     var data = urls[current_url_index].data;
