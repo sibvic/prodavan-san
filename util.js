@@ -17,6 +17,8 @@ function downloadNextUrl(index)
     req.open("GET", urlToGet, true);
     req.onload = showData;
     req.send(null);
+    var lastDate = new Date();
+    localStorage["last_scan_date"] = lastDate.getFullYear() + '/' + (lastDate.getMonth() + 1) + '/' + lastDate.getDate();
 }
 
 function saveUrls(urls)
@@ -30,6 +32,35 @@ function loadUrls()
     if (urls != null)
         return JSON.parse(urls);
     return new Array();
+}
+
+function getLastScanDate()
+{
+    return localStorage["last_scan_date"];
+}
+
+function getIgnoreList()
+{
+    var ignoreList = localStorage["ignore_list"];
+    if (ignoreList != null)
+        return JSON.parse(ignoreList);
+    return new Array();
+}
+
+function saveIgnoreList(ignoreList)
+{
+    localStorage["ignore_list"] = JSON.stringify(ignoreList);
+}
+
+function isModelIgnored(model, year, ignoreList)
+{
+    for (var i = 0; i < ignoreList.length; ++i){
+        if (ignoreList[i] == null)
+            continue;
+        if (!ignoreList[i].model == model && ignoreList[i].year == year)
+            return true;
+    }
+    return false;
 }
 
 function getUnwatchedCount(urlsArr){

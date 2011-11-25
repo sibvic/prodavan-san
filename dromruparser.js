@@ -12,6 +12,7 @@ function parseDromRuData()
     var valuePattern = new RegExp("<td[^>]*>([^<]+)</td>");
     var paramsPattern = new RegExp("<td>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)</td>");
     var pricePattern = new RegExp("<td>[^<]+<span[^>]+>([^<]+)</[^<]+<[^<]+<span[^>]+>([^<]+)");
+    var ignoreList = getIgnoreList();
     
     var data = urls[current_url_index].data;
     if (data == null)
@@ -44,6 +45,8 @@ function parseDromRuData()
             model = model + " " + res[2];
             sold = true;
         }
+        if (isModelIgnored(model, ignoreList))
+            continue;
         table = copyAfter(table, model);
         
         res = valuePattern.exec(table);

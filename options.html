@@ -52,6 +52,16 @@ function restore_options() {
         continue;
     add_more(urls[i].url, urls[i].data);
   }
+
+  var ignoreList = getIgnoreList();
+  var models = "";
+  for (var i = 0; i < ignoreList.length; ++i)
+  {
+    models = models + ignoreList[i].model + " (" + ignoreList[i].year + ")" + ", ";
+  }
+
+  var listSection = document.getElementById("ignoreList");
+  listSection.innerHTML = models;
 }
 
 function remove(index){
@@ -111,5 +121,6 @@ function add_more(url, data){
 </div>
 <button onclick="add_more('', '')">Добавить ещё</button><button onclick="save_options()">Сохранить</button>
 <p id="status" />
+<p id="ignoreList" />
 </body>
 </html>
