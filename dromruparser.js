@@ -45,7 +45,7 @@ function parseDromRuData()
             model = model + " " + res[2];
             sold = true;
         }
-        if (isModelIgnored(model, ignoreList))
+        if (isModelIgnored(model, year, ignoreList))
             continue;
         table = copyAfter(table, model);
         
