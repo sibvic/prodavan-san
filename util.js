@@ -18,7 +18,7 @@ function downloadNextUrl(index)
     req.onload = showData;
     req.send(null);
     var lastDate = new Date();
-    localStorage["last_scan_date"] = lastDate.getFullYear() + '/' + (lastDate.getMonth() + 1) + '/' + lastDate.getDate();
+    localStorage["last_scan_date"] = lastDate.getFullYear() + '/' + (lastDate.getMonth() + 1) + '/' + lastDate.getDate() + ' ' + lastDate.getHours() + ':' + lastDate.getMinutes();
 }
 
 function saveUrls(urls)
