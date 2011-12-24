@@ -24,6 +24,8 @@ function printData()
     }
     else
         chrome.browserAction.setBadgeText({text: ""});
+    var lastDate = new Date();
+    localStorage["last_scan_date"] = lastDate.getFullYear() + '/' + (lastDate.getMonth() + 1) + '/' + lastDate.getDate() + ' ' + lastDate.getHours() + ':' + lastDate.getMinutes();
 }
 
 function showData()

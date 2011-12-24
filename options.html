@@ -57,11 +57,25 @@ function restore_options() {
   var models = "";
   for (var i = 0; i < ignoreList.length; ++i)
   {
-    models = models + ignoreList[i].model + " (" + ignoreList[i].year + ")" + ", ";
+    if (ignoreList[i] != null)
+      models = models + "<div style=\"float:left\"><div style=\"float:left\" id=\"ignore_" + i +"\">" + ignoreList[i].model + " (" + ignoreList[i].year + ") " + "<div style=\"float:right\" class=\"link\" onclick=\"unignore(" + i + ")\">[X]</div></div><div style=\"float:right\">, </div></div>";
   }
 
   var listSection = document.getElementById("ignoreList");
   listSection.innerHTML = models;
+}
+
+function unignore(id) {
+  var ignore = document.getElementById("ignore_" + id);
+  var div = document.getElementById("ignoreList");
+  div.removeChild(ignore);
+  var ignoreList = getIgnoreList();
+  var newIgnoreList = new Array();
+  for (var i = 0; i < ignoreList.length; ++i){
+    if (i != id)
+      newIgnoreList[newIgnoreList.length] = ignoreList[i];
+  }
+  saveIgnoreList(newIgnoreList);
 }
 
 function remove(index){
