@@ -29,6 +29,15 @@ div.link{
   text-decoration: underline;
 }
 
+span.link{
+  font-size: 13px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  line-height: 20px;
+  color: #4A4949;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 img {
   margin:5px;
   border:2px solid black;
@@ -67,8 +76,17 @@ function addModel(model, year)
   this.year = year;
 }
 
-function ignoreModel(model, year)
+function hideAdRow(id)
 {
+    var table = document.getElementById("adverts");
+    var row = document.getElementById("ad_" + id);
+    table.removeChild(row);
+}
+
+function ignoreModel(model, year, id)
+{
+    hideAdRow(id);
+    
     var ignoreList = getIgnoreList();
     if (isModelIgnored(model, year, ignoreList))
       return;
@@ -102,6 +120,7 @@ function printData()
     document.body.appendChild(a);
     
     var mainTable = document.createElement("table");
+    mainTable.setAttribute('id', "adverts");
     document.body.appendChild(mainTable);
     for (var urlidx = 0; urlidx < urls.length; ++urlidx){
         var data = urls[urlidx].data;
@@ -109,6 +128,7 @@ function printData()
             if (data[i].watched)
                 continue;
             var row = document.createElement("tr");
+            row.setAttribute('id', "ad_" + i);
             mainTable.appendChild(row);
             
             var cell = document.createElement("td");
@@ -141,7 +161,7 @@ function printData()
                 cell.appendChild(document.createTextNode(data[i].model));
                 a = document.createElement("div");
                 a.setAttribute('class', "link");
-                a.setAttribute('onClick', "ignoreModel('" + data[i].model + "', '" + data[i].year + "');");
+                a.setAttribute('onClick', "ignoreModel('" + data[i].model + "', '" + data[i].year + "', '" + i + "');");
                 a.appendChild(document.createTextNode("Игнорировать"));
                 cell.appendChild(a);
             }
