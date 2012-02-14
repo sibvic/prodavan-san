@@ -23,10 +23,13 @@ div.link{
   text-decoration: underline;
 }
 </style>
+<script type="text/javascript" src="IgnoreList.js"></script>
 <script type="text/javascript" src="util.js"></script>
 <script type="text/javascript">
 
 var last_index = -1;
+var ignored = new IgnoreList();
+ignored.load();
 
 // Saves options to localStorage.
 function save_options() {
@@ -62,30 +65,31 @@ function restore_options() {
     add_more(urls[i].url, urls[i].data);
   }
 
-  var ignoreList = getIgnoreList();
   var models = "";
-  for (var i = 0; i < ignoreList.length; ++i)
+  var blockid = 0;
+  for (var i = 0; i < ignored.Ignored.length; ++i)
   {
-    if (ignoreList[i] != null)
-      models = models + "<div style=\"float:left\" id=\"ignore_" + i +"\">" 
-        + ignoreList[i].model + " (" + ignoreList[i].year + ") " + "<span class=\"link\" onclick=\"unignore(" + i + ")\">[X]</span>, </div>";
+    var car = ignored.Ignored[i];
+    if (car == null) {
+      continue;
+    }
+    models = models + "<span id=\"car_"  + i +"\">" + car.model + " (";
+    for (var ii = 0; ii < car.years.length; ++ii) {
+      models = models + "<span id=\"ignore_" + blockid +"\">" + car.years[ii] + "<span class=\"link\" onclick=\"unignore(" + i + ", " + blockid + ", '" + car.model + "', '" + car.years[ii] + "')\">[X]</span></span>, ";
+      blockid += 1;
+    }
+    models = models + ")<br/></span>";
   }
 
   var listSection = document.getElementById("ignoreList");
   listSection.innerHTML = models;
 }
 
-function unignore(id) {
+function unignore(carid, id, model, year) {
   var ignore = document.getElementById("ignore_" + id);
-  var div = document.getElementById("ignoreList");
+  var div = document.getElementById("car_" + carid);
   div.removeChild(ignore);
-  var ignoreList = getIgnoreList();
-  var newIgnoreList = new Array();
-  for (var i = 0; i < ignoreList.length; ++i){
-    if (i != id)
-      newIgnoreList[newIgnoreList.length] = ignoreList[i];
-  }
-  saveIgnoreList(newIgnoreList);
+  ignored.unignore(model, year);
 }
 
 function remove(index){

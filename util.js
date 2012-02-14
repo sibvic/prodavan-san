@@ -1,6 +1,7 @@
 var current_url_index = -1;
 var urls = loadUrls();
 var req;
+String.prototype.trim = function() { return this.replace(/^\s+/, '').replace(/\s+$/, ''); };
 
 function downloadNextUrl(index)
 {
@@ -35,30 +36,6 @@ function loadUrls()
 function getLastScanDate()
 {
     return localStorage["last_scan_date"];
-}
-
-function getIgnoreList()
-{
-    var ignoreList = localStorage["ignore_list"];
-    if (ignoreList != null)
-        return JSON.parse(ignoreList);
-    return new Array();
-}
-
-function saveIgnoreList(ignoreList)
-{
-    localStorage["ignore_list"] = JSON.stringify(ignoreList);
-}
-
-function isModelIgnored(model, year, ignoreList)
-{
-    for (var i = 0; i < ignoreList.length; ++i){
-        if (ignoreList[i] == null)
-            continue;
-        if (!ignoreList[i].model == model && ignoreList[i].year == year)
-            return true;
-    }
-    return false;
 }
 
 function getUnwatchedCount(urlsArr){

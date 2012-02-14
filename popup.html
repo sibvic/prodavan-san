@@ -47,9 +47,11 @@ img {
 }
 </style>
 <script type="text/javascript" src="util.js"></script>
+<script type="text/javascript" src="IgnoreList.js"></script>
 <script type="text/javascript" src="dromruparser.js"></script>
 <script>
 var urls = loadUrls();
+var ignored = new IgnoreList();
 window.setTimeout(function() {
       printData();
     }, 500);
@@ -70,12 +72,6 @@ function markAsRead()
     chrome.browserAction.setBadgeText({text: ""});
 }
 
-function addModel(model, year)
-{
-  this.model = model;
-  this.year = year;
-}
-
 function hideAdRow(id)
 {
     var table = document.getElementById("adverts");
@@ -87,17 +83,17 @@ function ignoreModel(model, year, id)
 {
     hideAdRow(id);
     
-    var ignoreList = getIgnoreList();
-    if (isModelIgnored(model, year, ignoreList))
-      return;
-    ignoreList[ignoreList.length] = new addModel(model, year);
-    saveIgnoreList(ignoreList);
+    if (ignored.isIgnored(model, year))
+        return;
+    ignored.ignore(model, year);
 }
 
 function printData()
 {
-    if (urls.length == 0)
+    if (urls.length == 0) {
         return;
+    }
+    ignored.load();
     var count = getUnwatchedCount(urls);
     if (count == 0)
     {
@@ -161,7 +157,7 @@ function printData()
                 cell.appendChild(document.createTextNode(data[i].model));
                 a = document.createElement("div");
                 a.setAttribute('class', "link");
-                a.setAttribute('onClick', "ignoreModel('" + data[i].model + "', '" + data[i].year + "', '" + i + "');");
+                a.setAttribute('onClick', "ignoreModel('" + data[i].model.trim() + "', '" + data[i].year.trim() + "', '" + i + "');");
                 a.appendChild(document.createTextNode("Игнорировать"));
                 cell.appendChild(a);
             }

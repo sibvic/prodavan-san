@@ -8,11 +8,12 @@ function parseDromRuData()
 {
     var urlPattern = new RegExp("<a href=\"([^\"]+)\">(\\d+-\\d+)</a>([^<]+<a href=)?");
     var imgPattern = new RegExp("<img[^s]* src=\"([^\"]+)\"( \/)?>");
-    var modelPattern = new RegExp("<td[^>]*>(?:[^<]+<(?:strike|b)>)?([^<]+)(?:[^<]+</(?:strike|b)>[^<]+<(?:strike|b)>)?([^<]+)?(</(?:strike|b)>[^<]+)?</td>");
+    var modelPattern = new RegExp("<td[^>]*>(?:[^<]*<(?:strike|b)>)?([^<]*)(?:[^<]+</(?:strike|b)>[^<]*<(?:strike|b)>)?([^<]*)?(</(?:strike|b)>[^<]*)?</td>");
     var valuePattern = new RegExp("<td[^>]*>([^<]+)</td>");
     var paramsPattern = new RegExp("<td>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)</td>");
     var pricePattern = new RegExp("<td>[^<]+<span[^>]+>([^<]+)</[^<]+<[^<]+<span[^>]+>([^<]+)");
-    var ignoreList = getIgnoreList();
+    var ignoreList = new IgnoreList();
+    ignoreList.load();
     
     var data = urls[current_url_index].data;
     if (data == null)
@@ -45,13 +46,13 @@ function parseDromRuData()
             model = model + " " + res[2];
             sold = true;
         }
-        if (isModelIgnored(model, year, ignoreList))
-            continue;
         table = copyAfter(table, model);
         
         res = valuePattern.exec(table);
         var year = res[1];
         table = copyAfter(table, year);
+        if (ignoreList.isIgnored(model, year))
+            continue;
         
         var engine;
         res = valuePattern.exec(table);
@@ -108,7 +109,7 @@ function parseDromRuData()
         }
         if (found)
             continue;
-        urls[current_url_index].data[urls[current_url_index].data.length] = new add(id, url, img, date, model, year, engine, fuel, gearbox, drive, track, city, price, sold);
+        urls[current_url_index].data[urls[current_url_index].data.length] = new add(id, url, img, date, model.trim(), year.trim(), engine, fuel, gearbox, drive, track, city, price, sold);
     } while (res != null)
     var watchedCount = 0;
     for (var i = 0; i < data.length; ++i){
