@@ -1,11 +1,12 @@
 var current_url_index = -1;
-var urls = loadUrls();
+var urls = new MonitoreUrlList();
+urls.Load();
 var req;
 String.prototype.trim = function() { return this.replace(/^\s+/, '').replace(/\s+$/, ''); };
 
 function downloadNextUrl(index)
 {
-    if (index >= urls.length)
+    if (index >= urls.Urls.length)
     {
         printData();
         return;
@@ -13,40 +14,16 @@ function downloadNextUrl(index)
     
     current_url_index = index;
     
-    var urlToGet = urls[index].url;
+    var urlToGet = urls.Urls[index].Url;
     req = new XMLHttpRequest();
     req.open("GET", urlToGet, true);
     req.onload = showData;
     req.send(null);
 }
 
-function saveUrls(urls)
-{
-    localStorage["dromru_urls"] = JSON.stringify(urls);
-}
-
-function loadUrls()
-{
-    var urls = localStorage["dromru_urls"];
-    if (urls != null)
-        return JSON.parse(urls);
-    return new Array();
-}
-
 function getLastScanDate()
 {
     return localStorage["last_scan_date"];
-}
-
-function getUnwatchedCount(urlsArr){
-    var count = 0;
-    for (var i = 0; i < urlsArr.length; ++i){
-        for (var ii = 0; ii < urlsArr[i].data.length; ++ii){
-            if (!urlsArr[i].data[ii].watched)
-                ++count;
-        }
-    }
-    return count;
 }
 
 function copyAfter(text, pattern)
@@ -70,10 +47,8 @@ function parseGorod55Data()
     var imgPattern = new RegExp("<img id=\"(?:[^\"]+)\" title=\"(?:[^\"]+)\" alt=\"(?:[^\"]+)\" src=\"([^\"]+)\"");
     var valuePattern = new RegExp(">([^<]+)<");
     
-    var data = urls[current_url_index].data;
-    if (data == null)
-        data = new Array();
-    urls[current_url_index].data = new Array();
+    var data = urls.Urls[current_url_index].Data;
+    urls.Urls[current_url_index].Data = new Array();
     
     var table = getGorod55Table(req.responseText);
     var res = null;
@@ -139,7 +114,7 @@ function parseGorod55Data()
         }
         if (found)
             continue;
-        urls[current_url_index].data[urls[current_url_index].data.length] = new add(id, url, img, date, model, year, engine, "", gearbox, "", trip, "Omsk", price, false);
+        urls.Urls[current_url_index].AddAdvertisement(id, url, img, date, model, year, engine, "", gearbox, "", trip, "Omsk", price, false);
     } while (res != null)
     var watchedCount = 0;
     for (var i = 0; i < data.length; ++i){
@@ -149,26 +124,6 @@ function parseGorod55Data()
                 continue;
             }
         }
-        urls[current_url_index].data[urls[current_url_index].data.length] = data[i];
+        urls.Urls[current_url_index].Data[urls.Urls[current_url_index].Data.length] = data[i];
     }
-}
-
-function add(id, url, imgUrl, date, model, year, engine, fuel, gearbox, drive, track, city, price, sold)
-{
-    this.id = id;
-    this.url = url;
-    this.imgUrl = imgUrl;
-    this.date = date;
-    this.model = model;
-    this.year = year;
-    this.engine = engine;
-    this.fuel = fuel;
-    this.gearbox = gearbox;
-    this.drive = drive;
-    this.track = track;
-    this.city = city;
-    this.price = price;
-    this.sold = sold;
-    this.url_index = current_url_index;
-    this.watched = false;
 }

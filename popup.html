@@ -46,12 +46,13 @@ img {
   height:75px;
 }
 </style>
-<script type="text/javascript" src="util.js"></script>
 <script type="text/javascript" src="IgnoreList.js"></script>
+<script type="text/javascript" src="MonitoredUrl.js"></script>
+<script type="text/javascript" src="util.js"></script>
 <script type="text/javascript" src="dromruparser.js"></script>
 <script>
-var urls = loadUrls();
-var ignored = new IgnoreList();
+var urls = new MonitoreUrlList();
+urls.Load();
 window.setTimeout(function() {
       printData();
     }, 500);
@@ -63,12 +64,7 @@ function compareCars(a, b)
 
 function markAsRead()
 {
-    for (var i = 0; i < urls.length; ++i){
-        for (var ii = 0; ii < urls[i].data.length; ++ii){
-            urls[i].data[ii].watched = true;
-        }
-    }
-    saveUrls(urls);
+    urls.MarkAsRead();
     chrome.browserAction.setBadgeText({text: ""});
 }
 
@@ -83,18 +79,17 @@ function ignoreModel(model, year, id)
 {
     hideAdRow(id);
     
-    if (ignored.isIgnored(model, year))
+    if (urls.IgnoreList.isIgnored(model, year))
         return;
-    ignored.ignore(model, year);
+    urls.IgnoreList.ignore(model, year);
 }
 
 function printData()
 {
-    if (urls.length == 0) {
+    if (urls.Urls.length == 0) {
         return;
     }
-    ignored.load();
-    var count = getUnwatchedCount(urls);
+    var count = urls.UnwatchedCount();
     if (count == 0)
     {
         var a = document.createElement("div");
@@ -118,8 +113,8 @@ function printData()
     var mainTable = document.createElement("table");
     mainTable.setAttribute('id', "adverts");
     document.body.appendChild(mainTable);
-    for (var urlidx = 0; urlidx < urls.length; ++urlidx){
-        var data = urls[urlidx].data;
+    for (var urlidx = 0; urlidx < urls.Urls.length; ++urlidx){
+        var data = urls.Urls[urlidx].Data;
         for (var i = 0; i < data.length; ++i){
             if (data[i].watched)
                 continue;

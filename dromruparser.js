@@ -12,13 +12,19 @@ function parseDromRuData()
     var valuePattern = new RegExp("<td[^>]*>([^<]+)</td>");
     var paramsPattern = new RegExp("<td>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)</td>");
     var pricePattern = new RegExp("<td>[^<]+<span[^>]+>([^<]+)</[^<]+<[^<]+<span[^>]+>([^<]+)");
-    var ignoreList = new IgnoreList();
-    ignoreList.load();
     
-    var data = urls[current_url_index].data;
-    if (data == null)
+    var data = urls.Urls[current_url_index].Data;
+    var lastID;
+    if (data == null) {
         data = new Array();
-    urls[current_url_index].data = new Array();
+    }
+    else {
+        if (data.length > 0) {
+            lastID = data[data.length - 1].id;
+        }
+    }
+
+    urls.Urls[current_url_index].Data = new Array();
     
     var table = getDromRuTable(req.responseText);
     var res = null;
@@ -51,8 +57,6 @@ function parseDromRuData()
         res = valuePattern.exec(table);
         var year = res[1];
         table = copyAfter(table, year);
-        if (ignoreList.isIgnored(model, year))
-            continue;
         
         var engine;
         res = valuePattern.exec(table);
@@ -92,7 +96,6 @@ function parseDromRuData()
             city = res[2];
         }
         table = copyAfter(table, "</td>");
-        var lastID = urls[current_url_index].lastID;
         var idPattern = new RegExp("/(\\d+)\\.htm");
         var res = idPattern.exec(url);
         if (res == null)
@@ -109,7 +112,7 @@ function parseDromRuData()
         }
         if (found)
             continue;
-        urls[current_url_index].data[urls[current_url_index].data.length] = new add(id, url, img, date, model.trim(), year.trim(), engine, fuel, gearbox, drive, track, city, price, sold);
+        urls.Urls[current_url_index].AddAdvertisement(id, url, img, date, model.trim(), year.trim(), engine, fuel, gearbox, drive, track, city, price, sold);
     } while (res != null)
     var watchedCount = 0;
     for (var i = 0; i < data.length; ++i){
@@ -119,6 +122,6 @@ function parseDromRuData()
                 continue;
             }
         }
-        urls[current_url_index].data[urls[current_url_index].data.length] = data[i];
+        urls.Urls[current_url_index].Data[urls.Urls[current_url_index].Data.length] = data[i];
     }
 }

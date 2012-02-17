@@ -1,11 +1,13 @@
-<script type="text/javascript" src="util.js"></script>
 <script type="text/javascript" src="IgnoreList.js"></script>
+<script type="text/javascript" src="MonitoredUrl.js"></script>
+<script type="text/javascript" src="util.js"></script>
 <script type="text/javascript" src="dromruparser.js"></script>
 <script>
 function check()
 {
     current_url_index = -1;
-    urls = loadUrls();
+    urls = new MonitoreUrlList();
+    urls.Load();
     req = null;
     downloadNextUrl(0);
 }
@@ -18,10 +20,10 @@ window.setInterval(function() {
 function printData()
 {
     chrome.browserAction.setBadgeBackgroundColor({color: [0, 255, 0, 255]});
-    var count = getUnwatchedCount(urls);
+    var count = urls.UnwatchedCount();
     if (count > 0){
         chrome.browserAction.setBadgeText({text: count.toString()});
-        saveUrls(urls);
+        urls.Save();
     }
     else
         chrome.browserAction.setBadgeText({text: ""});
@@ -31,7 +33,7 @@ function printData()
 
 function showData()
 {
-    if (urls[current_url_index].url.search("drom.ru") >= 0)
+    if (urls.Urls[current_url_index].Url.search("drom.ru") >= 0)
         parseDromRuData();
     else
         parseGorod55Data();
