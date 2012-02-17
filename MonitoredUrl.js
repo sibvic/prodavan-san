@@ -26,7 +26,7 @@ function MonitoredUrl(url, advertisements) {
 		this.Data = new Array();
 	}
 
-	this.AddAdvertisement = function(id, url, imgUrl, date, model, year, engine, fuel, gearbox, drive, track, city, price, sold) {
+	this.addAdvertisement = function(id, url, imgUrl, date, model, year, engine, fuel, gearbox, drive, track, city, price, sold) {
 		this.Data[this.Data.length] = new Advertisement(id, url, imgUrl, date, model, year, engine, fuel, gearbox, drive, track, city, price, sold);
 	}
 }
@@ -34,7 +34,15 @@ function MonitoredUrl(url, advertisements) {
 function MonitoreUrlList() {
 	this.Urls = new Array();
 
-	this.Load = function() {
+	this.length = function() {
+		return this.Urls.length;
+	}
+
+	this.get = function(index) {
+		return this.Urls[index];
+	}
+
+	this.load = function() {
 		this.Urls = new Array();
 
 		var loaded_urls = localStorage["dromru_urls"];
@@ -57,11 +65,11 @@ function MonitoreUrlList() {
     	}
 	}
 
-	this.Save = function() {
+	this.save = function() {
 		localStorage["urls"] = JSON.stringify(this.Urls);
 	}
 
-	this.UnwatchedCount = function() {
+	this.unwatchedCount = function() {
 	    var count = 0;
 	    for (var i = 0; i < this.Urls.length; ++i){
 	        for (var ii = 0; ii < this.Urls[i].Data.length; ++ii){
@@ -72,12 +80,12 @@ function MonitoreUrlList() {
 	    return count;
 	}
 
-	this.MarkAsRead = function() {
+	this.markAsRead = function() {
 		for (var i = 0; i < this.Urls.length; ++i){
 	        for (var ii = 0; ii < this.Urls[i].Data.length; ++ii) {
 	            this.Urls[i].Data[ii].watched = true;
 	        }
 	    }
-	    this.Save();
+	    this.save();
 	}
 }

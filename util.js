@@ -1,12 +1,12 @@
 var current_url_index = -1;
 var urls = new MonitoreUrlList();
-urls.Load();
+urls.load();
 var req;
 String.prototype.trim = function() { return this.replace(/^\s+/, '').replace(/\s+$/, ''); };
 
 function downloadNextUrl(index)
 {
-    if (index >= urls.Urls.length)
+    if (index >= urls.length())
     {
         printData();
         return;
@@ -14,7 +14,7 @@ function downloadNextUrl(index)
     
     current_url_index = index;
     
-    var urlToGet = urls.Urls[index].Url;
+    var urlToGet = urls.get(index).Url;
     req = new XMLHttpRequest();
     req.open("GET", urlToGet, true);
     req.onload = showData;
@@ -49,8 +49,8 @@ function parseGorod55Data()
     var ignoreList = new IgnoreList();
     ignoreList.load();
     
-    var data = urls.Urls[current_url_index].Data;
-    urls.Urls[current_url_index].Data = new Array();
+    var data = urls.get(current_url_index).Data;
+    urls.get(current_url_index).Data = new Array();
     
     var table = getGorod55Table(req.responseText);
     var res = null;
@@ -117,7 +117,7 @@ function parseGorod55Data()
         if (found)
             continue;
         if (!ignoreList.isIgnored(model, year)) {
-            urls.Urls[current_url_index].AddAdvertisement(id, url, img, date, model, year, engine, "", gearbox, "", trip, "Omsk", price, false);
+            urls.get(current_url_index).addAdvertisement(id, url, img, date, model, year, engine, "", gearbox, "", trip, "Omsk", price, false);
         }
     } while (res != null)
     var watchedCount = 0;
@@ -128,6 +128,6 @@ function parseGorod55Data()
                 continue;
             }
         }
-        urls.Urls[current_url_index].Data[urls.Urls[current_url_index].Data.length] = data[i];
+        urls.get(current_url_index).Data[urls.get(current_url_index).Data.length] = data[i];
     }
 }

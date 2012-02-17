@@ -52,7 +52,7 @@ img {
 <script type="text/javascript" src="dromruparser.js"></script>
 <script>
 var urls = new MonitoreUrlList();
-urls.Load();
+urls.load();
 window.setTimeout(function() {
       printData();
     }, 500);
@@ -64,7 +64,7 @@ function compareCars(a, b)
 
 function markAsRead()
 {
-    urls.MarkAsRead();
+    urls.markAsRead();
     chrome.browserAction.setBadgeText({text: ""});
 }
 
@@ -88,10 +88,10 @@ function ignoreModel(model, year, id)
 
 function printData()
 {
-    if (urls.Urls.length == 0) {
+    if (urls.length() == 0) {
         return;
     }
-    var count = urls.UnwatchedCount();
+    var count = urls.unwatchedCount();
     if (count == 0)
     {
         var a = document.createElement("div");
@@ -115,8 +115,8 @@ function printData()
     var mainTable = document.createElement("table");
     mainTable.setAttribute('id', "adverts");
     document.body.appendChild(mainTable);
-    for (var urlidx = 0; urlidx < urls.Urls.length; ++urlidx){
-        var data = urls.Urls[urlidx].Data;
+    for (var urlidx = 0; urlidx < urls.length(); ++urlidx){
+        var data = urls.get(urlidx).Data;
         for (var i = 0; i < data.length; ++i){
             if (data[i].watched)
                 continue;

@@ -15,7 +15,7 @@ function parseDromRuData()
     var ignoreList = new IgnoreList();
     ignoreList.load();
     
-    var data = urls.Urls[current_url_index].Data;
+    var data = urls.get(current_url_index).Data;
     var lastID;
     if (data == null) {
         data = new Array();
@@ -26,7 +26,7 @@ function parseDromRuData()
         }
     }
 
-    urls.Urls[current_url_index].Data = new Array();
+    urls.get(current_url_index).Data = new Array();
     
     var table = getDromRuTable(req.responseText);
     var res = null;
@@ -115,7 +115,7 @@ function parseDromRuData()
         if (found)
             continue;
         if (!ignoreList.isIgnored(model, year)) {
-            urls.Urls[current_url_index].AddAdvertisement(id, url, img, date, model.trim(), year.trim(), engine, fuel, gearbox, drive, track, city, price, sold);
+            urls.get(current_url_index).addAdvertisement(id, url, img, date, model.trim(), year.trim(), engine, fuel, gearbox, drive, track, city, price, sold);
         }
     } while (res != null)
     var watchedCount = 0;
@@ -126,6 +126,6 @@ function parseDromRuData()
                 continue;
             }
         }
-        urls.Urls[current_url_index].Data[urls.Urls[current_url_index].Data.length] = data[i];
+        urls.get(current_url_index).Data[urls.get(current_url_index).Data.length] = data[i];
     }
 }

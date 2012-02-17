@@ -42,7 +42,7 @@ function save_options() {
     var inputID = document.getElementById("url_lastID_" + i);
     urls.Urls[i] = new MonitoredUrl(input.value, JSON.parse(inputID.value));
   }
-  urls.Save();
+  urls.save();
 
   // Update status to let user know options were saved.
   var status = document.getElementById("status");
@@ -55,14 +55,14 @@ function save_options() {
 // Restores select box state to saved value from localStorage.
 function restore_options() {
   var urls = new MonitoreUrlList();
-  urls.Load();
-  if (urls.Urls.length == 0)
+  urls.load();
+  if (urls.length() == 0)
     return;
-  for (var i = 0; i < urls.Urls.length; ++i) {
-    var value = urls.Urls[i].Url;
+  for (var i = 0; i < urls.length(); ++i) {
+    var value = urls.get(i).Url;
     if (value == null)
         continue;
-    add_more(urls.Urls[i].Url, urls.Urls[i].Data);
+    add_more(urls.get(i).Url, urls.get(i).Data);
   }
 
   var models = "";

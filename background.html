@@ -7,7 +7,7 @@ function check()
 {
     current_url_index = -1;
     urls = new MonitoreUrlList();
-    urls.Load();
+    urls.load();
     req = null;
     downloadNextUrl(0);
 }
@@ -20,10 +20,10 @@ window.setInterval(function() {
 function printData()
 {
     chrome.browserAction.setBadgeBackgroundColor({color: [0, 255, 0, 255]});
-    var count = urls.UnwatchedCount();
+    var count = urls.unwatchedCount();
     if (count > 0){
         chrome.browserAction.setBadgeText({text: count.toString()});
-        urls.Save();
+        urls.save();
     }
     else
         chrome.browserAction.setBadgeText({text: ""});
@@ -33,7 +33,7 @@ function printData()
 
 function showData()
 {
-    if (urls.Urls[current_url_index].Url.search("drom.ru") >= 0)
+    if (urls.get(current_url_index).Url.search("drom.ru") >= 0)
         parseDromRuData();
     else
         parseGorod55Data();
