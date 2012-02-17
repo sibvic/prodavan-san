@@ -12,6 +12,8 @@ function parseDromRuData()
     var valuePattern = new RegExp("<td[^>]*>([^<]+)</td>");
     var paramsPattern = new RegExp("<td>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)</td>");
     var pricePattern = new RegExp("<td>[^<]+<span[^>]+>([^<]+)</[^<]+<[^<]+<span[^>]+>([^<]+)");
+    var ignoreList = new IgnoreList();
+    ignoreList.load();
     
     var data = urls.Urls[current_url_index].Data;
     var lastID;
@@ -112,7 +114,9 @@ function parseDromRuData()
         }
         if (found)
             continue;
-        urls.Urls[current_url_index].AddAdvertisement(id, url, img, date, model.trim(), year.trim(), engine, fuel, gearbox, drive, track, city, price, sold);
+        if (!ignoreList.isIgnored(model, year)) {
+            urls.Urls[current_url_index].AddAdvertisement(id, url, img, date, model.trim(), year.trim(), engine, fuel, gearbox, drive, track, city, price, sold);
+        }
     } while (res != null)
     var watchedCount = 0;
     for (var i = 0; i < data.length; ++i){

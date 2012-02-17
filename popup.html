@@ -79,9 +79,11 @@ function ignoreModel(model, year, id)
 {
     hideAdRow(id);
     
-    if (urls.IgnoreList.isIgnored(model, year))
+    var ignoreList = new IgnoreList();
+    ignoreList.load();
+    if (ignoreList.isIgnored(model, year))
         return;
-    urls.IgnoreList.ignore(model, year);
+    ignoreList.ignore(model, year);
 }
 
 function printData()

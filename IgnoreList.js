@@ -1,6 +1,14 @@
 function IgnoreList () {
 	this.Ignored = new Array();
 
+	this.length = function() {
+		return this.Ignored.length;
+	}
+
+	this.get = function(index) {
+		return this.Ignored[index];
+	}
+
 	this.trim = function(str) {
 		return str.replace(/^\s+/, '').replace(/\s+$/, '');
 	};

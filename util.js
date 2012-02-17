@@ -46,6 +46,8 @@ function parseGorod55Data()
     var urlPattern = new RegExp("<a href='/auto/autoad/view/\\?id=(\\d+)'");
     var imgPattern = new RegExp("<img id=\"(?:[^\"]+)\" title=\"(?:[^\"]+)\" alt=\"(?:[^\"]+)\" src=\"([^\"]+)\"");
     var valuePattern = new RegExp(">([^<]+)<");
+    var ignoreList = new IgnoreList();
+    ignoreList.load();
     
     var data = urls.Urls[current_url_index].Data;
     urls.Urls[current_url_index].Data = new Array();
@@ -114,7 +116,9 @@ function parseGorod55Data()
         }
         if (found)
             continue;
-        urls.Urls[current_url_index].AddAdvertisement(id, url, img, date, model, year, engine, "", gearbox, "", trip, "Omsk", price, false);
+        if (!ignoreList.isIgnored(model, year)) {
+            urls.Urls[current_url_index].AddAdvertisement(id, url, img, date, model, year, engine, "", gearbox, "", trip, "Omsk", price, false);
+        }
     } while (res != null)
     var watchedCount = 0;
     for (var i = 0; i < data.length; ++i){

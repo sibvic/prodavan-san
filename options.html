@@ -40,7 +40,7 @@ function save_options() {
     if (input == null)
       break;
     var inputID = document.getElementById("url_lastID_" + i);
-    urls.Urls[i] = new MonitoredUrl(null, input.value, JSON.parse(inputID.value));
+    urls.Urls[i] = new MonitoredUrl(input.value, JSON.parse(inputID.value));
   }
   urls.Save();
 
@@ -67,9 +67,11 @@ function restore_options() {
 
   var models = "";
   var blockid = 0;
-  for (var i = 0; i < urls.IgnoreList.Ignored.length; ++i)
+  var ignoreList = new IgnoreList();
+  ignoreList.load();
+  for (var i = 0; i < ignoreList.length(); ++i)
   {
-    var car = urls.IgnoreList.Ignored[i];
+    var car = ignoreList.get(i);
     if (car == null) {
       continue;
     }
