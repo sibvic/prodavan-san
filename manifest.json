@@ -1,11 +1,11 @@
 ﻿{
-  "name": "Drom.ru",
+  "name": "Продаван-сан",
   "version": "1.0",
   "description": "Обявления на drom.ru.",
   "options_page": "options.html",
   "background_page": "background.html",
   "browser_action": {
-    "default_icon": "drom.png",
+    "default_icon": "icon.png",
     "popup": "popup.html"
   },
   "permissions": [

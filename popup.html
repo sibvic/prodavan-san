@@ -89,6 +89,10 @@ function ignoreModel(model, year, id)
 function printData()
 {
     if (urls.length() == 0) {
+        var a = document.createElement("div");
+        a.setAttribute('class', "text");
+        a.appendChild(document.createTextNode("Добавьте ссылки для слежения в настройках!"));
+        document.body.appendChild(a);
         return;
     }
     var count = urls.unwatchedCount();
@@ -102,7 +106,7 @@ function printData()
         a = document.createElement("div");
         a.setAttribute('class', "text");
         var lastDate = getLastScanDate();
-        a.appendChild(document.createTextNode(lastDate));
+        a.appendChild(document.createTextNode("Время последней проверки: " + lastDate));
         document.body.appendChild(a);
         return;
     }
