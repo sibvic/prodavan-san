@@ -10,7 +10,7 @@ function parseDromRuData()
     var imgPattern = new RegExp("<img[^s]* src=\"([^\"]+)\"( \/)?>");
     var modelPattern = new RegExp("<td[^>]*>(?:[^<]*<(?:strike|b)>)?([^<]*)(?:[^<]+</(?:strike|b)>[^<]*<(?:strike|b)>)?([^<]*)?(</(?:strike|b)>[^<]*)?</td>");
     var valuePattern = new RegExp("<td[^>]*>([^<]+)</td>");
-    var paramsPattern = new RegExp("<td>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)<br[^>]+>([^<]*)</td>");
+    var enginePattern = new RegExp("<td[^>]*>([^<]+)<br/>([^<]*)<br/>([^<]*)<br/>([^<]*)<br/>");
     var pricePattern = new RegExp("<td>[^<]+<span[^>]+>([^<]+)</[^<]+<[^<]+<span[^>]+>([^<]+)");
     var ignoreList = new IgnoreList();
     ignoreList.load();
@@ -61,19 +61,16 @@ function parseDromRuData()
         table = copyAfter(table, year);
         
         var engine;
-        res = valuePattern.exec(table);
-        if (res != null)
-            engine = res[1];
-        
         var fuel;
         var gearbox;
         var drive;
-        res = paramsPattern.exec(table);
+        res = enginePattern.exec(table);
         if (res != null)
         {
-            fuel = res[1];
-            gearbox = res[2];
-            drive = res[3];
+            engine = res[1];
+            fuel = res[2];
+            gearbox = res[3];
+            drive = res[4];
         }
         table = copyAfter(table, drive);
         
