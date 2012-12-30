@@ -4,7 +4,9 @@
   "manifest_version": 2,
   "description": "Обявления на drom.ru.",
   "options_page": "options.html",
-  "background": "background.html",
+  "background": {
+    "page": "background.html"
+  },
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
