@@ -59,7 +59,7 @@ function printData()
         return;
     }
     var a = document.createElement("div");
-    a.setAttribute('onClick', "markAsRead();");
+    a.onclick = markAsRead;
     a.setAttribute('class', "link");
     a.appendChild(document.createTextNode("Пометить как прочитанные"));
     document.body.appendChild(a);
@@ -80,14 +80,16 @@ function printData()
             row.appendChild(cell);
             var a = document.createElement("div");
             a.setAttribute('class', "link");
-            a.setAttribute('onClick', "chrome.tabs.create({'url':\"" + data[i].url + "\", 'selected':true});");
+            a.data = data[i];
+            a.onclick = function() {chrome.tabs.create({'url': this.data.url});}
             a.appendChild(document.createTextNode(data[i].date));
             cell.appendChild(a);
             
             cell = document.createElement("td");
             row.appendChild(cell);
             var a = document.createElement("div");
-            a.setAttribute('onClick', "chrome.tabs.create({'url':\"" + data[i].url + "\", 'selected':true});");
+            a.data = data[i];
+            a.onclick = function() {chrome.tabs.create({'url': this.data.url});}
             var img = document.createElement("img");
             img.setAttribute('src', data[i].imgUrl);
             a.appendChild(img);
@@ -106,7 +108,9 @@ function printData()
                 cell.appendChild(document.createTextNode(data[i].model));
                 a = document.createElement("div");
                 a.setAttribute('class', "link");
-                a.setAttribute('onClick', "ignoreModel('" + data[i].model.trim() + "', '" + data[i].year.trim() + "', '" + i + "');");
+                a.data = data[i];
+                a.i_value = i;
+                a.onclick = function() {ignoreModel(this.data.model.trim(), this.data.year.trim(), this.i_value);}
                 a.appendChild(document.createTextNode("Игнорировать"));
                 cell.appendChild(a);
             }

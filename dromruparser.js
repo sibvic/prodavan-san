@@ -10,6 +10,7 @@ function parseDromRuData()
     var imgPattern = new RegExp("<img[^s]* src=\"([^\"]+)\"( \/)?>");
     var modelPattern = new RegExp("<td[^>]*>(?:[^<]*<(?:strike|b)>)?([^<]*)(?:[^<]+</(?:strike|b)>[^<]*<(?:strike|b)>)?([^<]*)?(</(?:strike|b)>[^<]*)?</td>");
     var valuePattern = new RegExp("<td[^>]*>([^<]+)</td>");
+    var trackPattern = new RegExp("<td[^>]*>([^<]+)(,[^>]*>)?(б/п)?([^>]*>.*)?</td>");
     var enginePattern = new RegExp("<td[^>]*>([^<]+)<br/>([^<]*)<br/>([^<]*)<br/>([^<]*)<br/>");
     var pricePattern = new RegExp("<td>[^<]+<span[^>]+>([^<]+)</[^<]+<[^<]+<span[^>]+>([^<]+)");
     var ignoreList = new IgnoreList();
@@ -74,7 +75,7 @@ function parseDromRuData()
         }
         table = copyAfter(table, drive);
         
-        res = valuePattern.exec(table);
+        res = trackPattern.exec(table);
         var track;
         if (res != null)
             track = res[1];
